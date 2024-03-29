@@ -1,0 +1,13 @@
+D:\ITS\OneDrive - Humber College\Semester 2\ITE-5230-IRA-Application Dev using C#.Net\Assignment_3\obj\Debug\Assignment_3.csproj.AssemblyReference.cache
+D:\ITS\OneDrive - Humber College\Semester 2\ITE-5230-IRA-Application Dev using C#.Net\Assignment_3\obj\Debug\Assignment_3.Login.resources
+D:\ITS\OneDrive - Humber College\Semester 2\ITE-5230-IRA-Application Dev using C#.Net\Assignment_3\obj\Debug\Assignment_3.Properties.Resources.resources
+D:\ITS\OneDrive - Humber College\Semester 2\ITE-5230-IRA-Application Dev using C#.Net\Assignment_3\obj\Debug\Assignment_3.csproj.GenerateResource.cache
+D:\ITS\OneDrive - Humber College\Semester 2\ITE-5230-IRA-Application Dev using C#.Net\Assignment_3\obj\Debug\Assignment_3.csproj.CoreCompileInputs.cache
+D:\ITS\OneDrive - Humber College\Semester 2\ITE-5230-IRA-Application Dev using C#.Net\Assignment_3\bin\Debug\Assignment_3.exe.config
+D:\ITS\OneDrive - Humber College\Semester 2\ITE-5230-IRA-Application Dev using C#.Net\Assignment_3\bin\Debug\Assignment_3.exe
+D:\ITS\OneDrive - Humber College\Semester 2\ITE-5230-IRA-Application Dev using C#.Net\Assignment_3\bin\Debug\Assignment_3.pdb
+D:\ITS\OneDrive - Humber College\Semester 2\ITE-5230-IRA-Application Dev using C#.Net\Assignment_3\obj\Debug\Assignment_3.DataUpdateForm.resources
+D:\ITS\OneDrive - Humber College\Semester 2\ITE-5230-IRA-Application Dev using C#.Net\Assignment_3\obj\Debug\Assignment_3.MainForm.resources
+D:\ITS\OneDrive - Humber College\Semester 2\ITE-5230-IRA-Application Dev using C#.Net\Assignment_3\obj\Debug\Assignment_3.StudentAddForm.resources
+D:\ITS\OneDrive - Humber College\Semester 2\ITE-5230-IRA-Application Dev using C#.Net\Assignment_3\obj\Debug\Assignment_3.exe
+D:\ITS\OneDrive - Humber College\Semester 2\ITE-5230-IRA-Application Dev using C#.Net\Assignment_3\obj\Debug\Assignment_3.pdb
