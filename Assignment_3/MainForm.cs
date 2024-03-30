@@ -18,105 +18,83 @@ namespace Assignment_3
         private void MainForm_Load(object sender, EventArgs e)
         {
             // Create initial data
-            StudentDB.CreateInitialData();
+            StudentDB.LoadInitialData();
 
             // Populate the DataGridView with the list of students
             UpdateDataGridView();
 
-            // Populate the list of students in the ListBox
-            UpdateStudentList();
+            dataGridViewStudents.SelectionChanged += dataGridViewStudents_SelectionChanged;
 
         }
 
-        private void UpdateDataGridView()
-        {
-            // Clear any existing data
-            dataGridViewStudents.DataSource = null;
 
-            // Get student data from StudentDB
+        private void dataGridViewStudents_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            
+        }
+
+        public void UpdateDataGridView()
+        {
+            // Get the list of students from StudentDB
             List<Student> students = StudentDB.GetStudents();
 
-            // Create a DataTable to hold student information
-            DataTable studentTable = new DataTable();
-            studentTable.Columns.Add("Student Info");
+            // Clear existing data (optional)
+            dataGridViewStudents.Rows.Clear();
 
-            // Add student data to the DataTable
+            // Loop through each student and add a row to the DataGridView
             foreach (Student student in students)
             {
-                studentTable.Rows.Add($"S{student.StudentID}: {student.Name}");
+                int rowIndex = dataGridViewStudents.Rows.Add();
+
+                // Set values for each column based on student properties
+                dataGridViewStudents.Rows[rowIndex].Cells["StudentID"].Value = student.StudentID;
+                dataGridViewStudents.Rows[rowIndex].Cells["FirstName"].Value = student.FirstName;
+                dataGridViewStudents.Rows[rowIndex].Cells["LastName"].Value = student.LastName;
+                dataGridViewStudents.Rows[rowIndex].Cells["Age"].Value = student.Age;
+                dataGridViewStudents.Rows[rowIndex].Cells["Gender"].Value = student.Gender;
+                dataGridViewStudents.Rows[rowIndex].Cells["ClassName"].Value = student.Classname;
+                dataGridViewStudents.Rows[rowIndex].Cells["Score"].Value = student.TotalAssignmentScore;
+                dataGridViewStudents.Rows[rowIndex].Cells["MaxScore"].Value = student.TotalMaxScore;
+                dataGridViewStudents.Rows[rowIndex].Cells["Average"].Value = (double)student.TotalAssignmentScore / student.Assignments.Length;
             }
-
-            // Set the DataGridView's DataSource to the DataTable
-            dataGridViewStudents.DataSource = studentTable;
-
-            // (Optional) Set the "Student Info" column as the default displayed column
-            dataGridViewStudents.Columns["Student Info"].DisplayIndex = 0;
         }
 
-        
-
-        public void UpdateStudentList()
+        private void dataGridViewStudents_SelectionChanged(object sender, EventArgs e)
         {
-            // Update the ListBox with the list of students from StudentDB
-            listOfStudents.Items.Clear();
-            foreach (Student student in StudentDB.GetStudents())
-            {
-                listOfStudents.Items.Add($"S{student.StudentID}: {student.Name}");
-            }
-            // Clear the TextBoxes
-            ClearTextBoxes();
-        }
-
-        private void listOfStudents_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-            Student selectedStudent = GetSelectedStudent();
-
-            if (selectedStudent != null)
-            {
-                //MessageBox.Show(selectedStudent.ToString());
-                // Display student details in text boxes
-                StudentDB.UpdateStudentTextBoxes(selectedStudent, txtScoreTotal, txtScoreCount, txtAverage);
-            }
-            else
-            {
-                // Clear text boxes if no student is selected
-                ClearTextBoxes();
-            }
-
-                
-        }
-
-        //method to get the selected student
-        public Student GetSelectedStudent()
-        {
-            // Check if a student is selected in the DataGridView
+            // Check if a row is selected
             if (dataGridViewStudents.SelectedRows.Count > 0)
             {
-                DataRow selectedRow = ((DataRowView)dataGridViewStudents.SelectedRows[0].DataBoundItem).Row;
-                string studentInfo = selectedRow["Student Info"].ToString();
+                // Get the selected row
+                DataGridViewRow selectedRow = dataGridViewStudents.SelectedRows[0];
 
-                // Extract student ID from the formatted string
-                int startIndex = studentInfo.IndexOf("S") + 1;
-                int endIndex = studentInfo.IndexOf(":");
-                string studentIDString = studentInfo.Substring(startIndex, endIndex - startIndex).Trim();
+                // Extract student ID (assuming the ID is in the first column)
+                int studentID = int.Parse(selectedRow.Cells[0].Value.ToString());
 
-                if (int.TryParse(studentIDString, out int selectedStudentID))
+                // Use the student ID for further actions (e.g., display details, edit student)
+                Student selectedStudent = StudentDB.FindStudent(studentID);
+
+                if (selectedStudent != null)
                 {
-                    return StudentDB.FindStudent(selectedStudentID);
+                    // Display student details in a separate control or perform other actions
+                    MessageBox.Show($"Selected Student: {selectedStudent.ToString()}");
+                }
+                else
+                {
+                    MessageBox.Show("Student not found!");
                 }
             }
-
-            return null;
         }
 
-
-        private void ClearTextBoxes()
+        //Find the selected student in the DataGridView and return the corresponding Student object
+        private Student GetSelectedStudent()
         {
-            // Clear the TextBoxes
-            txtScoreTotal.Text = "";
-            txtScoreCount.Text = "";
-            txtAverage.Text = "";
+            if (dataGridViewStudents.SelectedRows.Count > 0)
+            {
+                DataGridViewRow selectedRow = dataGridViewStudents.SelectedRows[0];
+                int studentID = int.Parse(selectedRow.Cells["StudentID"].Value.ToString());
+                return StudentDB.FindStudent(studentID);
+            }
+            return null;
         }
 
         private void btnPerform_Click(object sender, EventArgs e)
@@ -133,7 +111,7 @@ namespace Assignment_3
 
                 if (result == DialogResult.OK)
                 {
-                    UpdateStudentList();
+                    UpdateDataGridView();
                 }
                 else
                 {
@@ -145,8 +123,8 @@ namespace Assignment_3
                 // Check if a student is selected in the ListBox
                 if (GetSelectedStudent() != null)
                 {
-                    StudentDB.RemoveStudent(selectedStudent);
-                    UpdateStudentList();
+                    StudentDB.DeleteStudentByID(selectedStudent.StudentID);
+                    UpdateDataGridView();
                 }
                 else
                 {
@@ -209,31 +187,6 @@ namespace Assignment_3
             btnPerform_Click(sender, e);
         }
 
-        private void dataGridViewStudents_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0) // Check if a valid row is selected
-            {
-                Student selectedStudent = GetSelectedStudent();
-
-                if (selectedStudent != null)
-                {
-                    StudentDB.UpdateStudentTextBoxes(selectedStudent, txtScoreTotal, txtScoreCount, txtAverage);
-                }
-            }
-
-        }
-
-        private void dataGridViewStudents_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0) // Check if a valid row is selected
-            {
-                Student selectedStudent = GetSelectedStudent();
-
-                if (selectedStudent != null)
-                {
-                    StudentDB.UpdateStudentTextBoxes(selectedStudent, txtScoreTotal, txtScoreCount, txtAverage);
-                }
-            }
-        }
+        
     }
 }

@@ -10,17 +10,24 @@ namespace Assignment_3
     {
         private static int nextStudentID = 100;
 
-        public int StudentID;
-        public string Name { get; set; }
-        public int TotalAssignmentScore { get; set; }
-        public int TotalMaxScore { get; set; }
+        public int StudentID { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int Age { get; set; }
+        public string Gender { get; set; }
+        public string Classname { get; set; }
+        public string Grade { get; set; }
+        public int TotalAssignmentScore { get; private set; }
+        public int TotalMaxScore { get; private set; }
         public Assignment[] Assignments { get; set; } = new Assignment[5];
 
-
-        // Constructor to create a student with only a student name
-        public Student(string name)
+        public Student(string firstName, string lastName, int age, string gender, string classname)
         {
-            Name = name;
+            FirstName = firstName;
+            LastName = lastName;
+            Age = age;
+            Gender = gender;
+            Classname = classname;
             StudentID = nextStudentID++;
             Assignments = new Assignment[5];
 
@@ -31,26 +38,59 @@ namespace Assignment_3
 
             TotalAssignmentScore = 0;
             TotalMaxScore = 0;
+            Grade = CalculateGrade();
         }
 
-        
-        public void AddAssignment(Assignment assignment)
+        public void AddAssignment(string assignmentName, int maxScore, int score)
         {
             for (int i = 0; i < Assignments.Length; i++)
             {
                 if (Assignments[i] == null)
                 {
-                    Assignments[i] = assignment;
-                    TotalAssignmentScore += assignment.Score;
-                    TotalMaxScore += assignment.MaxScore;
-                    break;
+                    Assignments[i] = new Assignment(assignmentName, maxScore, score);
+                    TotalMaxScore += maxScore;
+                    TotalAssignmentScore += score;
+                    Grade = CalculateGrade();
+                    return;
                 }
             }
+
+            // Handle case where all assignment slots are filled
+            throw new Exception("Student assignment slots are full!");
+        }
+
+        public void UpdateAssignment(int assignmentID, string assignmentName, int newScore)
+        {
+            for (int i = 0; i < Assignments.Length; i++)
+            {
+                if (Assignments[i] != null && Assignments[i].AssignmentID == assignmentID)
+                {
+                    int oldScore = Assignments[i].Score;
+                    Assignments[i].AssignmentName = assignmentName;
+                    Assignments[i].Score = newScore;
+                    TotalMaxScore -= oldScore;
+                    TotalMaxScore += newScore;
+                    TotalAssignmentScore -= oldScore;
+                    TotalAssignmentScore += newScore;
+                    Grade = CalculateGrade();
+                    return;
+                }
+            }
+
+            // Handle case where assignment not found
+            throw new Exception("Assignment with ID " + assignmentID + " not found for student!");
         }
 
         public Assignment FindAssignment(int assignmentID)
         {
-            return Assignments.FirstOrDefault(a => a != null && a.AssignmentID == assignmentID);
+            for (int i = 0; i < Assignments.Length; i++)
+            {
+                if (Assignments[i] != null && Assignments[i].AssignmentID == assignmentID)
+                {
+                    return Assignments[i];
+                }
+            }
+            return null; // Assignment not found
         }
 
         public void RemoveAssignment(int assignmentID)
@@ -59,35 +99,50 @@ namespace Assignment_3
             {
                 if (Assignments[i] != null && Assignments[i].AssignmentID == assignmentID)
                 {
-                    TotalAssignmentScore -= Assignments[i].Score;
-                    TotalMaxScore -= Assignments[i].MaxScore;
+                    int removedScore = Assignments[i].Score;
+                    int removedMaxScore = Assignments[i].MaxScore;
                     Assignments[i] = null;
-                    break;
+                    TotalMaxScore -= removedMaxScore;
+                    TotalAssignmentScore -= removedScore;
+                    Grade = CalculateGrade();
+                    return;
                 }
             }
+
+            // Handle case where assignment not found
+            throw new Exception("Assignment with ID " + assignmentID + " not found for student!");
         }
 
-        public void UpdateAssignment(int AssignmentID, string newAssignmentName, int newAssignmentScore)
+        public string CalculateGrade()
         {
-            // Find the index of assigment in the array of assignments of the student
-            int index = Array.FindIndex(Assignments, a => a != null && a.AssignmentID == AssignmentID);
+            double percentage = (double)TotalAssignmentScore / TotalMaxScore * 100;
 
-            // Update the assignment name and score at index 
-            if (index != -1)
+            if (percentage >= 90)
             {
-                Assignments[index].AssignmentName = newAssignmentName;
-                Assignments[index].Score = newAssignmentScore;
-
-                TotalAssignmentScore -= Assignments[index].Score;
-                TotalAssignmentScore += newAssignmentScore;
+                return "A";
+            }
+            else if (percentage >= 80)
+            {
+                return "B";
+            }
+            else if (percentage >= 70)
+            {
+                return "C";
+            }
+            else if (percentage >= 60)
+            {
+                return "D";
+            }
+            else
+            {
+                return "F";
             }
         }
 
         public override string ToString()
         {
-            return $"StudentID: {StudentID}, Name: {Name}, TotalAssignmentScore: {TotalAssignmentScore}, TotalMaxScore: {TotalMaxScore}";
+            return $"{StudentID}: {FirstName} {LastName}";
         }
-
     }
 
 }

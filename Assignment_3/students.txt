@@ -1,0 +1,11 @@
+StudentID,FirstName,LastName,Age,Gender,Classname,Grade
+1,John,Doe,16,Male,Mathematics,B
+2,Jane,Smith,17,Female,Science,B
+3,Michael,Lee,18,Other,History,A
+4,Emily,Johnson,15,Female,English Literature,A
+5,David,Miller,16,Male,Computer Science,A
+7,William,Brown,18,Male,Chemistry,A
+8,Ashley,Davis,15,Female,English Literature,B
+9,Christopher,Clark,16,Male,Computer Science,A
+10,Amanda,Wilson,17,Female,Mathematics,B
+110,Ramees,KR,22,Male,Physics,F

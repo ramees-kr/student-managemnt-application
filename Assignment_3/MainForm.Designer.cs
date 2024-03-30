@@ -28,20 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listOfStudents = new System.Windows.Forms.ListBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.rbtnAdd = new System.Windows.Forms.RadioButton();
             this.rbtnUpdate = new System.Windows.Forms.RadioButton();
             this.rbtnDelete = new System.Windows.Forms.RadioButton();
             this.rbtnExit = new System.Windows.Forms.RadioButton();
             this.grpBoxOperation = new System.Windows.Forms.GroupBox();
             this.btnPerform = new System.Windows.Forms.Button();
-            this.txtScoreTotal = new System.Windows.Forms.TextBox();
-            this.txtScoreCount = new System.Windows.Forms.TextBox();
-            this.txtAverage = new System.Windows.Forms.TextBox();
-            this.labelScoreTotal = new System.Windows.Forms.Label();
-            this.labelScoreCount = new System.Windows.Forms.Label();
-            this.labelAverage = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,33 +49,14 @@
             this.Age = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Gender = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ClassName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TotalScore = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Score = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MaxScore = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Average = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.grpBoxOperation.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewStudents)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // listOfStudents
-            // 
-            this.listOfStudents.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listOfStudents.FormattingEnabled = true;
-            this.listOfStudents.ItemHeight = 18;
-            this.listOfStudents.Location = new System.Drawing.Point(44, 78);
-            this.listOfStudents.Name = "listOfStudents";
-            this.listOfStudents.Size = new System.Drawing.Size(677, 166);
-            this.listOfStudents.TabIndex = 0;
-            this.listOfStudents.SelectedIndexChanged += new System.EventHandler(this.listOfStudents_SelectedIndexChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(41, 44);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(66, 18);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Students";
             // 
             // rbtnAdd
             // 
@@ -136,7 +109,7 @@
             this.grpBoxOperation.Controls.Add(this.rbtnUpdate);
             this.grpBoxOperation.Controls.Add(this.rbtnDelete);
             this.grpBoxOperation.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpBoxOperation.Location = new System.Drawing.Point(903, 53);
+            this.grpBoxOperation.Location = new System.Drawing.Point(953, 432);
             this.grpBoxOperation.Name = "grpBoxOperation";
             this.grpBoxOperation.Size = new System.Drawing.Size(174, 212);
             this.grpBoxOperation.TabIndex = 6;
@@ -147,7 +120,7 @@
             // btnPerform
             // 
             this.btnPerform.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPerform.Location = new System.Drawing.Point(903, 283);
+            this.btnPerform.Location = new System.Drawing.Point(688, 525);
             this.btnPerform.Name = "btnPerform";
             this.btnPerform.Size = new System.Drawing.Size(174, 53);
             this.btnPerform.TabIndex = 7;
@@ -155,63 +128,6 @@
             this.btnPerform.UseVisualStyleBackColor = true;
             this.btnPerform.Visible = false;
             this.btnPerform.Click += new System.EventHandler(this.btnPerform_Click);
-            // 
-            // txtScoreTotal
-            // 
-            this.txtScoreTotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtScoreTotal.Location = new System.Drawing.Point(141, 272);
-            this.txtScoreTotal.Name = "txtScoreTotal";
-            this.txtScoreTotal.ReadOnly = true;
-            this.txtScoreTotal.Size = new System.Drawing.Size(112, 24);
-            this.txtScoreTotal.TabIndex = 8;
-            // 
-            // txtScoreCount
-            // 
-            this.txtScoreCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtScoreCount.Location = new System.Drawing.Point(397, 275);
-            this.txtScoreCount.Name = "txtScoreCount";
-            this.txtScoreCount.ReadOnly = true;
-            this.txtScoreCount.Size = new System.Drawing.Size(112, 24);
-            this.txtScoreCount.TabIndex = 9;
-            // 
-            // txtAverage
-            // 
-            this.txtAverage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAverage.Location = new System.Drawing.Point(609, 275);
-            this.txtAverage.Name = "txtAverage";
-            this.txtAverage.ReadOnly = true;
-            this.txtAverage.Size = new System.Drawing.Size(112, 24);
-            this.txtAverage.TabIndex = 10;
-            // 
-            // labelScoreTotal
-            // 
-            this.labelScoreTotal.AutoSize = true;
-            this.labelScoreTotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelScoreTotal.Location = new System.Drawing.Point(50, 275);
-            this.labelScoreTotal.Name = "labelScoreTotal";
-            this.labelScoreTotal.Size = new System.Drawing.Size(85, 18);
-            this.labelScoreTotal.TabIndex = 11;
-            this.labelScoreTotal.Text = "Score Total";
-            // 
-            // labelScoreCount
-            // 
-            this.labelScoreCount.AutoSize = true;
-            this.labelScoreCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelScoreCount.Location = new System.Drawing.Point(299, 278);
-            this.labelScoreCount.Name = "labelScoreCount";
-            this.labelScoreCount.Size = new System.Drawing.Size(92, 18);
-            this.labelScoreCount.TabIndex = 12;
-            this.labelScoreCount.Text = "Score Count";
-            // 
-            // labelAverage
-            // 
-            this.labelAverage.AutoSize = true;
-            this.labelAverage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelAverage.Location = new System.Drawing.Point(542, 281);
-            this.labelAverage.Name = "labelAverage";
-            this.labelAverage.Size = new System.Drawing.Size(61, 18);
-            this.labelAverage.TabIndex = 13;
-            this.labelAverage.Text = "Average";
             // 
             // menuStrip1
             // 
@@ -222,7 +138,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(9, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1077, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1148, 28);
             this.menuStrip1.TabIndex = 14;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -254,21 +170,21 @@
             // addToolStripMenuItem
             // 
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(141, 26);
             this.addToolStripMenuItem.Text = "&Add";
             this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
             // 
             // updateToolStripMenuItem
             // 
             this.updateToolStripMenuItem.Name = "updateToolStripMenuItem";
-            this.updateToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.updateToolStripMenuItem.Size = new System.Drawing.Size(141, 26);
             this.updateToolStripMenuItem.Text = "&Update";
             this.updateToolStripMenuItem.Click += new System.EventHandler(this.updateToolStripMenuItem_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(141, 26);
             this.deleteToolStripMenuItem.Text = "&Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -283,25 +199,28 @@
             this.Age,
             this.Gender,
             this.ClassName,
-            this.TotalScore});
+            this.Score,
+            this.MaxScore,
+            this.Average});
             this.dataGridViewStudents.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridViewStudents.Location = new System.Drawing.Point(3, 20);
             this.dataGridViewStudents.Name = "dataGridViewStudents";
             this.dataGridViewStudents.RowHeadersWidth = 51;
             this.dataGridViewStudents.RowTemplate.Height = 24;
-            this.dataGridViewStudents.Size = new System.Drawing.Size(933, 300);
+            this.dataGridViewStudents.Size = new System.Drawing.Size(1109, 351);
             this.dataGridViewStudents.TabIndex = 15;
             this.dataGridViewStudents.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewStudents_CellContentClick);
+            this.dataGridViewStudents.SelectionChanged += new System.EventHandler(this.dataGridViewStudents_SelectionChanged);
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.dataGridViewStudents);
-            this.groupBox1.Location = new System.Drawing.Point(27, 342);
+            this.groupBox1.Location = new System.Drawing.Point(12, 43);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(939, 323);
+            this.groupBox1.Size = new System.Drawing.Size(1115, 374);
             this.groupBox1.TabIndex = 16;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "groupBox1";
+            this.groupBox1.Text = "Students";
             // 
             // StudentID
             // 
@@ -363,15 +282,27 @@
             this.ClassName.ReadOnly = true;
             this.ClassName.Width = 125;
             // 
-            // TotalScore
+            // Score
             // 
-            this.TotalScore.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.TotalScore.Frozen = true;
-            this.TotalScore.HeaderText = "Total Score";
-            this.TotalScore.MinimumWidth = 6;
-            this.TotalScore.Name = "TotalScore";
-            this.TotalScore.ReadOnly = true;
-            this.TotalScore.Width = 125;
+            this.Score.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Score.Frozen = true;
+            this.Score.HeaderText = "Score";
+            this.Score.MinimumWidth = 6;
+            this.Score.Name = "Score";
+            this.Score.ReadOnly = true;
+            this.Score.Width = 125;
+            // 
+            // MaxScore
+            // 
+            this.MaxScore.HeaderText = "Total Score";
+            this.MaxScore.MinimumWidth = 6;
+            this.MaxScore.Name = "MaxScore";
+            // 
+            // Average
+            // 
+            this.Average.HeaderText = "Average";
+            this.Average.MinimumWidth = 6;
+            this.Average.Name = "Average";
             // 
             // MainForm
             // 
@@ -379,19 +310,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1077, 683);
+            this.ClientSize = new System.Drawing.Size(1148, 429);
             this.ControlBox = false;
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.labelAverage);
-            this.Controls.Add(this.labelScoreCount);
-            this.Controls.Add(this.labelScoreTotal);
-            this.Controls.Add(this.txtAverage);
-            this.Controls.Add(this.txtScoreCount);
-            this.Controls.Add(this.txtScoreTotal);
             this.Controls.Add(this.btnPerform);
             this.Controls.Add(this.grpBoxOperation);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.listOfStudents);
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
@@ -413,21 +336,12 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.ListBox listOfStudents;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.RadioButton rbtnAdd;
         private System.Windows.Forms.RadioButton rbtnUpdate;
         private System.Windows.Forms.RadioButton rbtnDelete;
         private System.Windows.Forms.RadioButton rbtnExit;
         private System.Windows.Forms.GroupBox grpBoxOperation;
         private System.Windows.Forms.Button btnPerform;
-        private System.Windows.Forms.TextBox txtScoreTotal;
-        private System.Windows.Forms.TextBox txtScoreCount;
-        private System.Windows.Forms.TextBox txtAverage;
-        private System.Windows.Forms.Label labelScoreTotal;
-        private System.Windows.Forms.Label labelScoreCount;
-        private System.Windows.Forms.Label labelAverage;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
@@ -443,7 +357,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Age;
         private System.Windows.Forms.DataGridViewTextBoxColumn Gender;
         private System.Windows.Forms.DataGridViewTextBoxColumn ClassName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn TotalScore;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Score;
+        private System.Windows.Forms.DataGridViewTextBoxColumn MaxScore;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Average;
     }
 }
 

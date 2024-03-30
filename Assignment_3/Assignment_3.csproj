@@ -75,7 +75,6 @@
       <DependentUpon>StudentAddForm.cs</DependentUpon>
     </Compile>
     <Compile Include="StudentDB.cs" />
-    <Compile Include="Test.cs" />
     <EmbeddedResource Include="DataUpdateForm.resx">
       <DependentUpon>DataUpdateForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -111,6 +110,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assignments.txt" />
+    <Content Include="students.txt" />
     <Content Include="user.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

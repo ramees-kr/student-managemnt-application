@@ -39,7 +39,7 @@ namespace Assignment_3
             comboStudentName.SelectedItem = selectedStudent;
 
             // Display selected student's name in textBoxNewStudentName
-            textBoxNewStudentName.Text = selectedStudent.Name;
+            textBoxNewStudentName.Text = selectedStudent.FirstName + selectedStudent.LastName;
 
             if (checkBoxUpdateAssignments.Checked)
             {
@@ -194,7 +194,7 @@ namespace Assignment_3
             }
 
             // Update selected student data
-            selectedStudent.Name = textBoxNewStudentName.Text;
+            selectedStudent.FirstName = textBoxNewStudentName.Text;
 
             // Update student data in StudentDB
             StudentDB.UpdateStudent(selectedStudent);
@@ -203,7 +203,7 @@ namespace Assignment_3
             MainForm mainForm = Application.OpenForms.OfType<MainForm>().FirstOrDefault();
             if (mainForm != null)
             {
-                mainForm.UpdateStudentList();
+                mainForm.UpdateDataGridView();
             }
 
             MessageBox.Show("Data updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);

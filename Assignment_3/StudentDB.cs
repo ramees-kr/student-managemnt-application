@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -10,32 +12,38 @@ namespace Assignment_3
     public static class StudentDB
     {
         private static List<Student> students = new List<Student>();
+        private static string studentFile = "..\\..\\students.txt";
+        private static string assignmentFile = "..\\..\\assignments.txt";
 
-        public static void AddNewStudent(string studentName, string assignmentName, int assignmentScore)
+        static StudentDB()
         {
-            Student newStudent = new Student(studentName);
-            Assignment assignment = new Assignment(assignmentName, assignmentScore, 100);
-            newStudent.AddAssignment(assignment);
-
-            students.Add(newStudent);
-            UpdateStudentListInMainForm();
         }
 
-        public static void UpdateStudentListInMainForm()
+        public static void LoadInitialData()
         {
-            MainForm.Instance.UpdateStudentList();
+            MessageBox.Show("Before Reading Students");
+            // Load initial student data from files on startup
+            students = ReadStudentsFromFile(studentFile);
+            MessageBox.Show("After Reading Students");
+
+            LoadStudentAssignments(students, assignmentFile);
+            //CalculateGrade();
         }
 
-        // Find student by ID
-        public static Student FindStudent(int studentID)
+        //Method to calculate the grade of the all students
+        public static void CalculateGrade()
         {
-            return students.FirstOrDefault(s => s.StudentID == studentID);
+            foreach (Student student in students)
+            {
+                student.Grade = student.CalculateGrade();
+            }
         }
 
-        //
-        public static void AddStudentToDB(Student student)
+        // CRUD methods for students
+        public static void AddStudent(Student student)
         {
             students.Add(student);
+            SaveStudentsToFile(studentFile);
         }
 
         public static List<Student> GetStudents()
@@ -43,110 +51,232 @@ namespace Assignment_3
             return students;
         }
 
-        //method to get assignments array of a student
-        public static Assignment[] GetAssignments(Student student)
+        //Method to get the student by ID
+        public static Student GetStudentByID(int studentID)
         {
-            return student.Assignments;
+            return students.FirstOrDefault(s => s.StudentID == studentID);
         }
 
-        public static void RemoveStudent(Student student)
+        //Method to delete student by ID, delete assignements of the student, update both files.
+        public static void DeleteStudentByID(int studentID)
         {
-            students.Remove(student);
+            Student student = GetStudentByID(studentID);
+            if (student != null)
+            {
+                students.Remove(student);
+                DeleteStudentAssignments(studentID);
+                SaveStudentsToFile(studentFile);
+            }
         }
+
 
         public static void UpdateStudent(Student student)
         {
-            // Find the student in the list and replace it with the updated student
-            for (int i = 0; i < students.Count; i++)
+            int index = students.FindIndex(s => s.StudentID == student.StudentID);
+            if (index != -1)
             {
-                if (students[i].StudentID == student.StudentID)
-                {
-                    students[i] = student;
-                    break;
-                }
+                students[index] = student;
+                SaveStudentsToFile(studentFile);
+            }
+            else
+            {
+                throw new Exception("Student not found!");
             }
         }
 
-        //create initial student data
-        public static void CreateInitialData()
+        public static void DeleteStudent(int studentID)
         {
-            string[] studentNames = { "John Doe", "Jane Smith", "Bob Johnson", "Sue Wilson", "Mike Brown" };
-
-            string[] assignmentNames = { "Assignment 1", "Assignment 2", "Assignment 3", "Assignment 4", "Assignment 5" };
-
-            foreach (string studentName in studentNames)
+            int index = students.FindIndex(s => s.StudentID == studentID);
+            if (index != -1)
             {
-                Student student = new Student(studentName);
-
-                // Use methods from StudentDB to add assignments and add the student
-                for (int i = 0; i < student.Assignments.Length; i++)
-                {
-                    int randomScore = GetRandomScore(studentName, 70, 100);
-                    
-                    // Add a new assignment to the student pick random assignment name and score
-                    int randomAssignmentNameIndex = new Random().Next(0, assignmentNames.Length);
-                    student.AddAssignment(new Assignment(assignmentNames[randomAssignmentNameIndex], randomScore, 100));
-                    //student.AddAssignment(new Assignment(randomScore, 100));
-                }
-
-                // Add the student to the StudentDB
-                StudentDB.AddStudentToDB(student);
+                students.RemoveAt(index);
+                SaveStudentsToFile(studentFile);
+            }
+            else
+            {
+                throw new Exception("Student not found!");
             }
         }
 
-        //method to take in student object and add a new assignment to the student
-        public static void AddAssignmentToStudent(Student student, string assignmentName, int assignmentScore)
+        public static Student FindStudent(int studentID)
         {
-            student.AddAssignment(new Assignment(assignmentName, assignmentScore, 100));
+            return students.FirstOrDefault(s => s.StudentID == studentID);
         }
 
-        private static int GetRandomScore(string studentName, int min, int max)
-        {
-            // Use a seed based on the student's name to ensure unique scores
-            int seed = studentName.GetHashCode();
-            Random random = new Random(seed);
-            return random.Next(min, max + 1);
-        }
-
-        public static void UpdateStudentTextBoxes(Student student, TextBox txtScoreTotal, TextBox txtScoreCount, TextBox txtAverage)
-        {
-            int totalScore = 0;
-            int scoreCount = student.Assignments.Count(a => a != null);
-
-            foreach (Assignment assignment in student.Assignments)
-            {
-                if (assignment != null)
-                {
-                    totalScore = totalScore + assignment.Score;
-                }
-            }
-
-            double averageScore = (scoreCount > 0) ? (double)totalScore / scoreCount : 0;
-
-            // Update the TextBoxes
-            txtScoreTotal.Text = totalScore.ToString();
-            txtScoreCount.Text = scoreCount.ToString();
-            txtAverage.Text = averageScore.ToString("F2"); // Format average to two decimal places
-        }
-
-        internal static void UpdateAssignment(int studentID, Assignment selectedAssignment)
+        public static void UpdateAssignmentScore(int studentID, string assignmentName, int newScore)
         {
             Student student = FindStudent(studentID);
-            student.UpdateAssignment(selectedAssignment.AssignmentID, selectedAssignment.AssignmentName, selectedAssignment.Score);
-            UpdateStudent(student);
-            UpdateStudentListInMainForm();
+            //student.UpdateAssignment(assignmentName, newScore);
+            SaveStudentsToFile(studentFile);
+            SaveAssignmentsToFile(assignmentFile);
+        }
+
+        // Helper methods for file operations
+        private static List<Student> ReadStudentsFromFile(string filename)
+        {
+            List<Student> students = new List<Student>();
+            using (StreamReader reader = new StreamReader(filename))
+            {
+                // Skip header line
+                reader.ReadLine();
+
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    string[] data = line.Split(',');
+
+                    // Ensure correct number of fields
+                    if (data.Length != 7)
+                    {
+                        Console.WriteLine("Invalid data format: " + line);
+                        continue;
+                    }
+
+                    // Extract data using named properties
+                    string firstName = data[1].Trim();
+                    string lastName = data[2].Trim();
+                    int age = int.Parse(data[3].Trim());
+                    string gender = data[4].Trim();
+                    string className = data[5].Trim();
+
+                    // Create new student
+                    Student student = new Student(firstName, lastName, age, gender, className);
+
+                    MessageBox.Show(student.ToString());
+
+                    // Assign student ID from file
+                    student.StudentID = int.Parse(data[0].Trim());
+
+                    // Add student to list
+                    students.Add(student);
+                }
+            }
+            return students;
+        }
+
+
+        private static void SaveStudentsToFile(string filename)
+        {
+            using (StreamWriter writer = new StreamWriter(filename))
+            {
+                writer.WriteLine("StudentID,FirstName,LastName,Age,Gender,Classname,Grade");
+                foreach (Student student in students)
+                {
+                    string studentData = $"{student.StudentID},{student.FirstName},{student.LastName},{student.Age},{student.Gender},{student.Classname},{student.Grade}";
+                    writer.WriteLine(studentData);
+                }
+            }
+        }
+
+        private static void LoadStudentAssignments(List<Student> students, string filename)
+        {
+            using (StreamReader reader = new StreamReader(filename))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    string[] data = line.Split(',');
+                    if (data.Length != 4)
+                    {
+                        Console.WriteLine("Invalid data format: " + line);
+                        continue; // Skip invalid lines
+                    }
+
+                    int studentID;
+                    if (!int.TryParse(data[0], out studentID))
+                    {
+                        Console.WriteLine($"Invalid student ID: {data[0]}");
+                        continue; // Skip this line and move to the next one
+                    }
+
+                    string assignmentName = data[1];
+
+                    int maxScore;
+                    if (!int.TryParse(data[2], out maxScore))
+                    {
+                        Console.WriteLine($"Invalid max score: {data[2]}");
+                        continue; // Skip this line and move to the next one
+                    }
+
+                    int score;
+                    if (!int.TryParse(data[3], out score))
+                    {
+                        Console.WriteLine($"Invalid score: {data[3]}");
+                        continue; // Skip this line and move to the next one
+                    }
+
+
+                    // Find the student with the corresponding ID
+                    Student student = students.FirstOrDefault(s => s.StudentID == studentID);
+                    if (student != null)
+                    {
+                        // Add the assignment to the student
+                        student.AddAssignment(assignmentName, maxScore, score);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Student with ID {studentID} not found.");
+                    }
+                }
+            }
+        }
+
+        private static void SaveAssignmentsToFile(string filename)
+        {
+            using (StreamWriter writer = new StreamWriter(filename))
+            {
+                foreach (Student student in students)
+                {
+                    foreach (Assignment assignment in student.Assignments)
+                    {
+                        if (assignment != null)
+                        {
+                            writer.WriteLine($"{student.StudentID},{assignment.AssignmentName},{assignment.MaxScore},{assignment.Score}");
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void DeleteStudentAssignments(int studentID)
+        {
+            foreach (Student student in students)
+            {
+                if (student.StudentID == studentID)
+                {
+                    for (int i = 0; i < student.Assignments.Length; i++)
+                    {
+                        student.Assignments[i] = null;
+                    }
+                }
+            }
+            SaveAssignmentsToFile(assignmentFile);
+        }
+
+        internal static Assignment[] GetAssignments(Student selectedStudent)
+        {
+            //retun the assignments of the selected student
+            return selectedStudent.Assignments;
         }
 
         internal static Assignment GetAssignmentByID(Student selectedStudent, int selectedAssignmentID)
         {
-           //return the assignment with the given ID from the student's assignments
-            return selectedStudent.FindAssignment(selectedAssignmentID);
+            throw new NotImplementedException();
+        }
+
+        internal static void UpdateAssignment(int studentID, Assignment selectedAssignment)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void AddAssignmentToStudent(Student selectedStudent, string text, int newScore)
+        {
+            throw new NotImplementedException();
         }
 
         internal static void RemoveAssignment(Student selectedStudent, int assignmentID)
         {
-            selectedStudent.RemoveAssignment(assignmentID);
-            UpdateStudentListInMainForm();
+            throw new NotImplementedException();
         }
     }
 }

@@ -15,27 +15,12 @@ namespace Assignment_3
         public int Score { get; set; }
         public int MaxScore { get; set; }
 
-        public Assignment(int score, int maxScore)
+        public Assignment(string assignmentName, int maxScore, int score)
         {
-            AssignmentID = nextAssignmentID++;
-            Score = score;
+            AssignmentName = assignmentName;
             MaxScore = maxScore;
-        }
-
-        public Assignment(string AssignmentName, int score, int maxScore)
-        {
-            AssignmentID = nextAssignmentID++;
-            this.AssignmentName = AssignmentName;
             Score = score;
-            MaxScore = maxScore;
+            AssignmentID = nextAssignmentID++;
         }
-
-        public override string ToString()
-        {
-            return $"ID: {AssignmentID}, Assignment Name: {AssignmentName}, Score: {Score}, MaxScore: {MaxScore}";
-        }
-
-
     }
-
 }
