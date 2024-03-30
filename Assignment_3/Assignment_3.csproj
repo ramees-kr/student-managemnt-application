@@ -75,6 +75,12 @@
       <DependentUpon>StudentAddForm.cs</DependentUpon>
     </Compile>
     <Compile Include="StudentDB.cs" />
+    <Compile Include="StudentUpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StudentUpdateForm.Designer.cs">
+      <DependentUpon>StudentUpdateForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="DataUpdateForm.resx">
       <DependentUpon>DataUpdateForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -95,6 +101,9 @@
     </Compile>
     <EmbeddedResource Include="StudentAddForm.resx">
       <DependentUpon>StudentAddForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StudentUpdateForm.resx">
+      <DependentUpon>StudentUpdateForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

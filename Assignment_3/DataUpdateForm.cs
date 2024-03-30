@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace Assignment_3
 {
@@ -26,22 +27,23 @@ namespace Assignment_3
 
             // Populate comboStudentName with student names
             comboStudentName.DataSource = students;
-            comboStudentName.DisplayMember = "Name";
-            comboStudentName.ValueMember = "Name";
+            //comboStudentName.DisplayMember = selectedStudent.FullName;
+            //comboStudentName.ValueMember = selectedStudent.FullName;
             comboStudentName.SelectedItem = selectedStudent;
 
             InitializeControls();
         }
 
+
         private void InitializeControls()
         {
             // Select the current student in the ComboBox
-            comboStudentName.SelectedItem = selectedStudent;
+            //comboStudentName.SelectedItem = selectedStudent;
 
             // Display selected student's name in textBoxNewStudentName
-            textBoxNewStudentName.Text = selectedStudent.FirstName + selectedStudent.LastName;
+            //textBoxNewStudentName.Text = selectedStudent.FirstName + selectedStudent.LastName;
 
-            if (checkBoxUpdateAssignments.Checked)
+            if (rbtnUpdateAssignments.Checked)
             {
                 LoadAssignments(selectedStudent);
             }
@@ -51,12 +53,12 @@ namespace Assignment_3
                 ClearAssignmentControls();
                 DisableAssignmentControls();
             }
-
         }
 
         private void DisableAssignmentControls()
         {
-            listOfAssignments.Enabled = false;
+            groupBox1.Enabled = false;
+            dataGridViewAssignments.Enabled = false;
             label1.Enabled = false;
             textBoxAssignmentScore.Enabled = false;
             textBoxAssignmentName.Enabled = false;
@@ -70,7 +72,8 @@ namespace Assignment_3
 
         private void EnableAssignmentControls()
         {
-            listOfAssignments.Enabled = true;
+            groupBox1.Enabled = true;
+            dataGridViewAssignments.Enabled = true;
             label1.Enabled = true;
             textBoxAssignmentScore.Enabled = true;
             textBoxAssignmentName.Enabled = true;
@@ -82,29 +85,40 @@ namespace Assignment_3
             btnFind.Visible = true;
         }
 
-
-
         private void LoadAssignments(Student selectedStudent)
         {
-            // Get the assignments for the selected student using the method in StudentDB
-            Assignment[] assignments = StudentDB.GetAssignments(selectedStudent);
+            // Clear existing rows in the DataGridView
+            dataGridViewAssignments.Rows.Clear();
 
-            // Clear the listbox
-            listOfAssignments.Items.Clear();
-
-            // Add the assignments to the listbox
-            foreach (Assignment assignment in assignments)
+            // Check if selectedStudent or its Assignments array is null
+            if (selectedStudent == null || selectedStudent.Assignments == null)
             {
-                if (assignment != null)
-                {
-                    listOfAssignments.Items.Add(assignment);
-                }
+                // Handle the case where there are no assignments for the selected student
+                MessageBox.Show("No assignments found for the selected student.");
+                return;
+            }
+
+            // Iterate over the assignments of the selected student
+            foreach (Assignment assignment in selectedStudent.Assignments)
+            {
+                if (assignment == null) continue; // Skip null assignments
+
+                // Add a new row to the DataGridView
+                int rowIndex = dataGridViewAssignments.Rows.Add();
+
+                // Set values for each column based on assignment properties
+                dataGridViewAssignments.Rows[rowIndex].Cells["AssignmentID"].Value = assignment.AssignmentID;
+                dataGridViewAssignments.Rows[rowIndex].Cells["AssignmentName"].Value = assignment.AssignmentName;
+                dataGridViewAssignments.Rows[rowIndex].Cells["Score"].Value = assignment.Score;
+                dataGridViewAssignments.Rows[rowIndex].Cells["MaxScore"].Value = assignment.MaxScore;
             }
         }
 
+
+
         private void ClearAssignmentControls()
         {
-            listOfAssignments.DataSource = null;
+            //listOfAssignments.DataSource = null;
             textBoxAssignmentID.Clear();
             textBoxAssignmentName.Clear();
             textBoxAssignmentScore.Clear();
@@ -112,24 +126,13 @@ namespace Assignment_3
 
         public Assignment GetSelectedAssignment()
         {
-            // Check if an assignment is selected in the ListBox
-            if (listOfAssignments.SelectedItem != null)
+            // Get the selected assignment from the DataGridView
+            if (dataGridViewAssignments.SelectedRows.Count > 0)
             {
-                string selectedItem = listOfAssignments.SelectedItem.ToString();
-
-                // Extract the part between "ID:" and ","
-                int startIndex = selectedItem.IndexOf("ID:") + 3;
-                int endIndex = selectedItem.IndexOf(",");
-
-                string assignmentIDString = selectedItem.Substring(startIndex, endIndex - startIndex).Trim();
-
-                if (int.TryParse(assignmentIDString, out int selectedAssignmentID))
-                {
-                    return StudentDB.GetAssignmentByID(selectedStudent, selectedAssignmentID);
-                }
+                DataGridViewRow selectedRow = dataGridViewAssignments.SelectedRows[0];
+                int assignmentID = (int)selectedRow.Cells["AssignmentID"].Value;
+                return StudentDB.GetAssignmentByID(selectedStudent, assignmentID);
             }
-
-            // If no assignment is selected, return null
             return null;
         }
 
@@ -142,7 +145,24 @@ namespace Assignment_3
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (checkBoxUpdateAssignments.Checked)
+            if (rbtnUpdateStudent.Checked == true)
+            {
+                // open a new form to update the selected student
+                StudentUpdateForm updateStudent = new StudentUpdateForm(selectedStudent);
+                DialogResult result = updateStudent.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    // Refresh students in MainForm
+                    MainForm mainForm = Application.OpenForms.OfType<MainForm>().FirstOrDefault();
+                    if (mainForm != null)
+                    {
+                        mainForm.UpdateDataGridView();
+                        MessageBox.Show("Data updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            else if (rbtnUpdateAssignments.Checked == true)
             {
                 // Update selected assignment data
                 if (selectedAssignment != null)
@@ -166,8 +186,16 @@ namespace Assignment_3
                     }
 
                     // Update assignment data in StudentDB
-                    StudentDB.UpdateAssignment(selectedStudent.StudentID, selectedAssignment);
+                    StudentDB.UpdateAssignmentScore(selectedStudent.StudentID, selectedAssignment);
                     LoadAssignments(selectedStudent);
+
+                    // Refresh students in MainForm
+                    MainForm mainForm = Application.OpenForms.OfType<MainForm>().FirstOrDefault();
+                    if (mainForm != null)
+                    {
+                        mainForm.UpdateDataGridView();
+                        MessageBox.Show("Data updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
                 else
                 {
@@ -183,6 +211,14 @@ namespace Assignment_3
 
                         StudentDB.AddAssignmentToStudent(selectedStudent, textBoxAssignmentName.Text, newScore);
                         LoadAssignments(selectedStudent);
+
+                        // Refresh students in MainForm
+                        MainForm mainForm = Application.OpenForms.OfType<MainForm>().FirstOrDefault();
+                        if (mainForm != null)
+                        {
+                            mainForm.UpdateDataGridView();
+                            MessageBox.Show("Data updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
                     }
                     else
                     {
@@ -192,21 +228,7 @@ namespace Assignment_3
 
                 }
             }
-
-            // Update selected student data
-            selectedStudent.FirstName = textBoxNewStudentName.Text;
-
-            // Update student data in StudentDB
-            StudentDB.UpdateStudent(selectedStudent);
-
-            // Refresh students in MainForm
-            MainForm mainForm = Application.OpenForms.OfType<MainForm>().FirstOrDefault();
-            if (mainForm != null)
-            {
-                mainForm.UpdateDataGridView();
-            }
-
-            MessageBox.Show("Data updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+           
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -216,32 +238,6 @@ namespace Assignment_3
             this.Close();
         }
 
-        private void checkBoxUpdateAssignments_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxUpdateAssignments.Checked)
-            {
-                EnableAssignmentControls();
-                // Load assignments for the selected student
-                LoadAssignments(selectedStudent);
-            }
-            else
-            {
-                ClearAssignmentControls();
-                DisableAssignmentControls();
-            }
-        }
-
-        private void listOfAssignments_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            selectedAssignment = GetSelectedAssignment();
-
-            if (selectedAssignment != null)
-            {
-                textBoxAssignmentID.Text = selectedAssignment.AssignmentID.ToString();
-                textBoxAssignmentName.Text = selectedAssignment.AssignmentName;
-                textBoxAssignmentScore.Text = selectedAssignment.Score.ToString();
-            }
-        }
 
         private void UpdateSelectedAssignment(Assignment selectedAssignment)
         {
@@ -269,12 +265,12 @@ namespace Assignment_3
 
         private void updateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            checkBoxUpdateAssignments.Checked = true;
+            rbtnUpdateAssignments.Checked = true;
         }
 
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (checkBoxUpdateAssignments.Checked)
+            if (rbtnUpdateAssignments.Checked)
             {
                 Assignment[] assignments = StudentDB.GetAssignments(selectedStudent);
 
@@ -288,7 +284,7 @@ namespace Assignment_3
                     textBoxAssignmentScore.Clear();
 
                     MessageBox.Show("Enter the Assignment Name and score in the textboxes and click Save button to add the assignment.", "Add Assignment", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    checkBoxUpdateAssignments.Checked = true;
+                    rbtnUpdateAssignments.Checked = true;
                 }
                 else
                 {
@@ -304,7 +300,7 @@ namespace Assignment_3
 
         private void findToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (checkBoxUpdateAssignments.Checked)
+            if (rbtnUpdateAssignments.Checked)
             {
                 //textBoxAssignmentIDSearch.Enabled = true;
                 //btnFind.Enabled = true;
@@ -322,7 +318,7 @@ namespace Assignment_3
         private void btnFind_Click(object sender, EventArgs e)
         {
 
-            if (checkBoxUpdateAssignments.Checked)
+            if (rbtnUpdateAssignments.Checked)
             {
                 int assignmentID;
                 if (int.TryParse(textBoxAssignmentIDSearch.Text, out assignmentID))
@@ -343,7 +339,7 @@ namespace Assignment_3
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (checkBoxUpdateAssignments.Checked)
+            if (rbtnUpdateAssignments.Checked)
             {
                 if (selectedAssignment != null)
                 {
@@ -367,6 +363,52 @@ namespace Assignment_3
         private void exitToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void dataGridViewAssignments_SelectionChanged(object sender, EventArgs e)
+        {
+            // Get the selected assignment from the DataGridView
+            if (dataGridViewAssignments.SelectedRows.Count > 0)
+            {
+                DataGridViewRow selectedRow = dataGridViewAssignments.SelectedRows[0];
+                int assignmentID = (int)selectedRow.Cells["AssignmentID"].Value;
+                selectedAssignment = StudentDB.GetAssignmentByID(selectedStudent, assignmentID);
+
+                if (selectedAssignment != null)
+                {
+                    textBoxAssignmentID.Text = selectedAssignment.AssignmentID.ToString();
+                    textBoxAssignmentName.Text = selectedAssignment.AssignmentName;
+                    textBoxAssignmentScore.Text = selectedAssignment.Score.ToString();
+                }
+            }
+        }
+
+        private void rbtnUpdateStudent_CheckedChanged(object sender, EventArgs e)
+        {
+            if(rbtnUpdateAssignments.Checked == true)
+            {
+                EnableAssignmentControls();
+                LoadAssignments(selectedStudent);
+            }
+            else
+            {
+                ClearAssignmentControls();
+                DisableAssignmentControls();
+            }
+        }
+
+        private void rbtnUpdateAssignments_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbtnUpdateAssignments.Checked == true)
+            {
+                EnableAssignmentControls();
+                LoadAssignments(selectedStudent);
+            }
+            else
+            {
+                ClearAssignmentControls();
+                DisableAssignmentControls();
+            }
         }
     }
 }

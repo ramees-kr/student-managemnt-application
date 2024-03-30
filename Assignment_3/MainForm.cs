@@ -75,8 +75,7 @@ namespace Assignment_3
 
                 if (selectedStudent != null)
                 {
-                    // Display student details in a separate control or perform other actions
-                    MessageBox.Show($"Selected Student: {selectedStudent.ToString()}");
+                    //MessageBox.Show($"Selected Student: {selectedStudent.ToString()}");
                 }
                 else
                 {
@@ -123,8 +122,14 @@ namespace Assignment_3
                 // Check if a student is selected in the ListBox
                 if (GetSelectedStudent() != null)
                 {
-                    StudentDB.DeleteStudentByID(selectedStudent.StudentID);
-                    UpdateDataGridView();
+                    // Ask the user to confirm the deletion for the selected student
+                    DialogResult result = MessageBox.Show($"Are you sure you want to delete the selected student?\n Selected Student: {GetSelectedStudent().ToString()}", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        // Delete the selected student
+                        StudentDB.DeleteStudentByID(selectedStudent.StudentID);
+                        UpdateDataGridView();
+                    }
                 }
                 else
                 {

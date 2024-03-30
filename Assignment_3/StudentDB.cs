@@ -21,13 +21,10 @@ namespace Assignment_3
 
         public static void LoadInitialData()
         {
-            MessageBox.Show("Before Reading Students");
             // Load initial student data from files on startup
             students = ReadStudentsFromFile(studentFile);
-            MessageBox.Show("After Reading Students");
-
+         
             LoadStudentAssignments(students, assignmentFile);
-            //CalculateGrade();
         }
 
         //Method to calculate the grade of the all students
@@ -70,8 +67,9 @@ namespace Assignment_3
         }
 
 
-        public static void UpdateStudent(Student student)
+        public static void UpdateStudent(int studentID)
         {
+            Student student = FindStudent(studentID);
             int index = students.FindIndex(s => s.StudentID == student.StudentID);
             if (index != -1)
             {
@@ -103,10 +101,11 @@ namespace Assignment_3
             return students.FirstOrDefault(s => s.StudentID == studentID);
         }
 
-        public static void UpdateAssignmentScore(int studentID, string assignmentName, int newScore)
+        public static void UpdateAssignmentScore(int studentID, Assignment assignment)
         {
             Student student = FindStudent(studentID);
-            //student.UpdateAssignment(assignmentName, newScore);
+            student.UpdateAssignment(assignment.AssignmentID,assignment.AssignmentName,assignment.Score);
+
             SaveStudentsToFile(studentFile);
             SaveAssignmentsToFile(assignmentFile);
         }
@@ -133,6 +132,7 @@ namespace Assignment_3
                     }
 
                     // Extract data using named properties
+                    int studentID = int.Parse(data[0].Trim());
                     string firstName = data[1].Trim();
                     string lastName = data[2].Trim();
                     int age = int.Parse(data[3].Trim());
@@ -140,9 +140,9 @@ namespace Assignment_3
                     string className = data[5].Trim();
 
                     // Create new student
-                    Student student = new Student(firstName, lastName, age, gender, className);
+                    Student student = new Student(studentID, firstName, lastName, age, gender, className);
 
-                    MessageBox.Show(student.ToString());
+                    //MessageBox.Show(student.ToString());
 
                     // Assign student ID from file
                     student.StudentID = int.Parse(data[0].Trim());
@@ -236,6 +236,14 @@ namespace Assignment_3
                     }
                 }
             }
+
+            // Refresh students in MainForm
+            MainForm mainForm = Application.OpenForms.OfType<MainForm>().FirstOrDefault();
+            if (mainForm != null)
+            {
+                mainForm.UpdateDataGridView();
+                //MessageBox.Show("Data updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private static void DeleteStudentAssignments(int studentID)
@@ -259,24 +267,28 @@ namespace Assignment_3
             return selectedStudent.Assignments;
         }
 
+
         internal static Assignment GetAssignmentByID(Student selectedStudent, int selectedAssignmentID)
         {
-            throw new NotImplementedException();
+            //return the assignment of the selected student by ID
+            return selectedStudent.FindAssignment(selectedAssignmentID);
         }
 
-        internal static void UpdateAssignment(int studentID, Assignment selectedAssignment)
-        {
-            throw new NotImplementedException();
-        }
 
-        internal static void AddAssignmentToStudent(Student selectedStudent, string text, int newScore)
+        internal static void AddAssignmentToStudent(Student selectedStudent, string name, int score)
         {
-            throw new NotImplementedException();
+            //add the assignment to the selected student
+            selectedStudent.AddAssignment(name, 100, score);
+            SaveStudentsToFile(studentFile);    
+            SaveAssignmentsToFile(assignmentFile);
         }
 
         internal static void RemoveAssignment(Student selectedStudent, int assignmentID)
         {
-            throw new NotImplementedException();
+            //remove the assignment from the selected student
+            selectedStudent.RemoveAssignment(assignmentID);
+            SaveStudentsToFile(studentFile);
+            SaveAssignmentsToFile(assignmentFile);
         }
     }
 }

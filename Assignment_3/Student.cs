@@ -21,6 +21,15 @@ namespace Assignment_3
         public int TotalMaxScore { get; private set; }
         public Assignment[] Assignments { get; set; } = new Assignment[5];
 
+        //Static field to return first name and last name
+        public string FullName
+        {
+            get
+            {
+                return FirstName + " " + LastName;
+            }
+        }
+
         public Student(string firstName, string lastName, int age, string gender, string classname)
         {
             FirstName = firstName;
@@ -39,6 +48,16 @@ namespace Assignment_3
             TotalAssignmentScore = 0;
             TotalMaxScore = 0;
             Grade = CalculateGrade();
+        }
+
+        public Student(int studentID, string firstName, string lastName, int age, string gender, string className)
+        {
+            StudentID = studentID;
+            FirstName = firstName;
+            LastName = lastName;
+            Age = age;
+            Gender = gender;
+            Classname = className;
         }
 
         public void AddAssignment(string assignmentName, int maxScore, int score)
