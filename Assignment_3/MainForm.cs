@@ -67,6 +67,13 @@ namespace Assignment_3
                 // Get the selected row
                 DataGridViewRow selectedRow = dataGridViewStudents.SelectedRows[0];
 
+                //manage if an empty row is selected
+                if (selectedRow.Cells[0].Value == null)
+                {
+                    MessageBox.Show("You have selected an empty row. Please try again");
+                }
+                else
+                { 
                 // Extract student ID (assuming the ID is in the first column)
                 int studentID = int.Parse(selectedRow.Cells[0].Value.ToString());
 
@@ -80,6 +87,7 @@ namespace Assignment_3
                 else
                 {
                     MessageBox.Show("Student not found!");
+                }
                 }
             }
         }

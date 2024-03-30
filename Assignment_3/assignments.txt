@@ -3,13 +3,12 @@
 1,Midterm Exam,100,88
 2,Lab Report 2,30,25
 2,Midterm Exam,100,88
-2,Final Project,75,70
 3,Essay,75,70
 3,Presentation,25,23
 3,Final Exam,100,90
 4,Book Report,40,38
 4,Final Essay,50,45
-7,Chemical Analysis Report,50,48
+7,Chemical Analysis,50,78
 7,Quiz 3,20,18
 7,Final Exam,100,92
 8,Book Review,30,27
@@ -20,4 +19,3 @@
 9,Final Exam,100,97
 10,Quiz 2,15,12
 10,Final Exam,100,85
-100,Mid Term 5,100,66

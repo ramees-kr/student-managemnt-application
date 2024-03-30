@@ -8,7 +8,7 @@ namespace Assignment_3
 {
     public class Student
     {
-        private static int nextStudentID = 100;
+        private static int nextStudentID;
 
         public int StudentID { get; set; }
         public string FirstName { get; set; }
@@ -30,6 +30,10 @@ namespace Assignment_3
             }
         }
 
+        public static void SetNextStudentID(int studid)
+        {
+            nextStudentID = studid;
+        }
         public Student(string firstName, string lastName, int age, string gender, string classname)
         {
             FirstName = firstName;

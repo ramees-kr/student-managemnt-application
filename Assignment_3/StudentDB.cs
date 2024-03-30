@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,6 +15,7 @@ namespace Assignment_3
         private static List<Student> students = new List<Student>();
         private static string studentFile = "..\\..\\students.txt";
         private static string assignmentFile = "..\\..\\assignments.txt";
+        public static string[] data;
 
         static StudentDB()
         {
@@ -118,11 +120,10 @@ namespace Assignment_3
             {
                 // Skip header line
                 reader.ReadLine();
-
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    string[] data = line.Split(',');
+                    data = line.Split(',');
 
                     // Ensure correct number of fields
                     if (data.Length != 7)
@@ -149,6 +150,13 @@ namespace Assignment_3
 
                     // Add student to list
                     students.Add(student);
+                }
+
+                //if it is last line, set the next student ID to the last student ID + 1
+                if ((line = reader.ReadLine()) == null)
+                {
+                    int studentID = int.Parse(data[0].Trim()) + 1;
+                    Student.SetNextStudentID(studentID);
                 }
             }
             return students;
